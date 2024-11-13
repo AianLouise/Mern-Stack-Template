@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: red;
+  transform: rotate(-45deg);
+  animation: float 5s infinite;
+}
+
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -25px;
+  left: 0;
+}
+
+.heart::after {
+  left: 25px;
+  top: 0;
+}
+
+.heart1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.heart2 {
+  top: 40%;
+  left: 20%;
+  animation-delay: 1s;
+}
+
+.heart3 {
+  top: 60%;
+  left: 30%;
+  animation-delay: 2s;
+}
+
+.heart4 {
+  top: 80%;
+  left: 40%;
+  animation-delay: 3s;
+}
+
+.heart5 {
+  top: 50%;
+  left: 50%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(-45deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(-45deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-45deg);
+  }
+}
