@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { app } from '../firebase'; // Make sure to import your Firebase configuration
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -11,6 +13,7 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const navigate = useNavigate();
+  const storage = getStorage(app);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -57,6 +60,18 @@ const Profile = () => {
     }
   };
 
+  const handleProfilePictureChange = async (e) => {
+    const file = e.target.files[0];
+    const storageRef = ref(storage, `mern-test/profilePictures/${user._id}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      setProfilePicture(downloadURL);
+    } catch (err) {
+      setError('Failed to upload profile picture');
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -89,8 +104,28 @@ const Profile = () => {
           <h2 className="text-2xl font-bold text-center">Profile</h2>
           {user && (
             <div>
+              <div className="flex justify-center mb-4">
+                {profilePicture ? (
+                  <img src={profilePicture} alt="Profile" className="w-32 h-32 rounded-full" />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center">
+                    <span className="text-gray-500">No Image</span>
+                  </div>
+                )}
+              </div>
               {editMode ? (
                 <>
+                  <div>
+                    <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
+                      Upload Profile Picture
+                    </label>
+                    <input
+                      type="file"
+                      id="profilePicture"
+                      onChange={handleProfilePictureChange}
+                      className="w-full px-3 py-2 mt-1 border rounded"
+                    />
+                  </div>
                   <div>
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                       Username
@@ -115,18 +150,6 @@ const Profile = () => {
                       className="w-full px-3 py-2 mt-1 border rounded"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
-                      Profile Picture URL
-                    </label>
-                    <input
-                      type="text"
-                      id="profilePicture"
-                      value={profilePicture}
-                      onChange={(e) => setProfilePicture(e.target.value)}
-                      className="w-full px-3 py-2 mt-1 border rounded"
-                    />
-                  </div>
                   <button
                     onClick={handleSave}
                     className="w-full px-4 py-2 mt-4 text-white bg-green-500 rounded hover:bg-green-600"
@@ -144,10 +167,6 @@ const Profile = () => {
                 <>
                   <p><strong>Username:</strong> {user.username}</p>
                   <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Profile Picture:</strong></p>
-                  {user.profilePicture && (
-                    <img src={user.profilePicture} alt="Profile" className="w-32 h-32 rounded-full mx-auto" />
-                  )}
                   <button
                     onClick={() => setEditMode(true)}
                     className="w-full px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
