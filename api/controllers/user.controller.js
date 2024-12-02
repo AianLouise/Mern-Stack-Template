@@ -8,8 +8,20 @@ export const test = (req, res) => {
   });
 };
 
-// update user
+// Get user profile
+export const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
 
+// Update user
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     return next(errorHandler(401, 'You can update only your account!'));
@@ -38,8 +50,7 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
-// delete user
-
+// Delete user
 export const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     return next(errorHandler(401, 'You can delete only your account!'));
@@ -50,5 +61,4 @@ export const deleteUser = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 };
