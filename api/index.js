@@ -18,13 +18,24 @@ console.log('Client URL:', process.env.CLIENT_URL);
 
 // Configure CORS options
 const corsOptions = {
-  origin: 'https://mern-stack-template.vercel.app', // Allow specific origin from .env file
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed methods
+  origin: process.env.CLIENT_URL, // Allow specific origin from .env file
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // Allowed methods
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Add headers to all responses
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
