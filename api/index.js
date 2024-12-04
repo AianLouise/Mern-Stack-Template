@@ -20,8 +20,6 @@ console.log('Client URL:', process.env.CLIENT_URL);
 const corsOptions = {
   origin: process.env.CLIENT_URL, // Allow specific origin from .env file
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // Allowed methods
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };
 
 // Apply CORS middleware
