@@ -17,7 +17,10 @@ const app = express();
 console.log('Client URL:', process.env.CLIENT_URL);
 
 // Apply CORS middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
