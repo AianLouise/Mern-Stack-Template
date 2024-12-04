@@ -18,7 +18,7 @@ console.log('Client URL:', process.env.CLIENT_URL);
 
 // CORS configuration
 const corsOptions = {
-  origin: 'https://mern-stack-template.vercel.app', // Read from .env file
+  origin: process.env.CLIENT_URL, // Read from .env file
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these methods
   credentials: true, // Allow credentials like cookies
 };

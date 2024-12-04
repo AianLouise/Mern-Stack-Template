@@ -16,12 +16,14 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
+      console.log('Attempting to login with:', { email, password });
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, { email, password }, { withCredentials: true });
       dispatch(loginSuccess(response.data));
       console.log('Login successful:', response.data);
       // Redirect to landing page after successful login
       navigate('/landing');
     } catch (err) {
+      console.error('Login failed:', err);
       dispatch(loginFail('Invalid email or password'));
     }
   };
