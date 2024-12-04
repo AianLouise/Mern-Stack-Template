@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerStart, registerSuccess, registerFail } from '../redux/user/userSlice';
+import axiosInstance from '../../axiosInstance';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -19,12 +19,7 @@ const Register = () => {
     e.preventDefault();
     dispatch(registerStart());
     try {
-      const response = await axios.post('/api/auth/register', { username, email, password }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true, // Include credentials in the request
-      });
+      const response = await axiosInstance.post('/api/auth/register', { username, email, password });
       dispatch(registerSuccess(response.data));
       setSuccess('User registered successfully');
       setError('');

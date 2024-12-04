@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { app } from '../firebase'; // Make sure to import your Firebase configuration
+import axiosInstance from '../../axiosInstance';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -18,7 +18,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get('/api/user/profile');
+        const response = await axiosInstance.get('/api/user/profile');
         setUser(response.data);
         setUsername(response.data.username);
         setEmail(response.data.email);
@@ -35,7 +35,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get('/api/auth/logout');
+      await axiosInstance.get('/api/auth/logout');
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);
@@ -48,7 +48,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post(`/api/user/update/${user._id}`, {
+      const response = await axiosInstance.post(`/api/user/update/${user._id}`, {
         username,
         email,
         profilePicture,

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFail } from '../redux/user/userSlice';
+import axiosInstance from '../../axiosInstance';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,12 +16,7 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const response = await axios.post('/api/auth/login', { email, password }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true, // Include credentials in the request
-      });
+      const response = await axiosInstance.post('/api/auth/login', { email, password });
       dispatch(loginSuccess(response.data));
       console.log('Login successful:', response.data);
       // Redirect to landing page after successful login
