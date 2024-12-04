@@ -18,35 +18,27 @@ console.log('Client URL:', process.env.CLIENT_URL);
 
 // Apply CORS middleware
 app.use(cors({
-  origin: process.env.CORS_ALLOWED_ORIGINS, // Allow only the client URL
-  credentials: true, // Required for credentials (cookies)
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow necessary HTTP methods
+  origin: process.env.CLIENT_URL,
+  credentials: true,
 }));
-
-// Handle preflight requests explicitly
-app.options('*', cors());
-
-// Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
-// Test route
 app.get("/", (req, res) => {
   res.json("Hello");
 });
 
-// MongoDB connection
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// API routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
-// Serve static files for the client
+// Catch-all route to serve index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
@@ -62,7 +54,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
