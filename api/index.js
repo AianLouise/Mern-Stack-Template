@@ -23,6 +23,7 @@ const allowedOrigins = [process.env.CLIENT_URL, 'https://mern-stack-template.ver
 
 app.use(cors({
   origin: function (origin, callback) {
+    console.log('Origin:', origin); // Log the origin for debugging
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
