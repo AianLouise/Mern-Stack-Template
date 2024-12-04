@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: mern-stack-api
+    env: node
+    plan: free
+    buildCommand: cd api && npm install
+    startCommand: npm start
+    rootDir: ./api
+    envVars:
+      - key: MONGODB_URI
+        value: <your-mongodb-uri>
+      - key: CLIENT_URL
+        value: https://mern-stack-template.vercel.app
+  - type: web
+    name: mern-stack-client
+    env: node
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    startCommand: npm run serve
+    rootDir: ./client
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://mern-stack-template-api.vercel.app
