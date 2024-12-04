@@ -19,7 +19,11 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'https://mern-stack-template.vercel.app',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
