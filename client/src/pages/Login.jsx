@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFail } from '../redux/user/userSlice';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance'; // Import the configured axios instance
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,16 +18,7 @@ const Login = () => {
     try {
       console.log('Attempting to login with:', { email, password });
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
-        { email, password },
-        {
-          headers: {
-            'Content-Type': 'application/json', // Ensures correct content type
-          },
-          withCredentials: true, // Allows cookies or credentials to be sent
-        }
-      );
+      const response = await axiosInstance.post('/api/auth/login', { email, password });
 
       dispatch(loginSuccess(response.data));
       console.log('Login successful:', response.data);
