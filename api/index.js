@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import fs from 'fs';
 
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
@@ -27,12 +26,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-
-// Serve static files only if the directory exists
-const clientDistPath = path.join(__dirname, 'client', 'dist');
-if (fs.existsSync(clientDistPath)) {
-  app.use(express.static(clientDistPath));
-}
+app.use(express.static(path.join(__dirname, '/client/dist')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -43,22 +37,9 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
-// Serve the UI view for the API
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Catch-all route to serve index.html if it exists
+// Catch-all route to serve index.html
 app.get('*', (req, res) => {
-  if (fs.existsSync(clientDistPath)) {
-    res.sendFile(path.join(clientDistPath, 'index.html'));
-  } else {
-    res.status(404).json({
-      success: false,
-      message: 'index.html not found',
-      statusCode: 404,
-    });
-  }
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
 // Error handling middleware
