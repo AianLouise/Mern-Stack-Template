@@ -18,7 +18,7 @@ console.log('Client URL:', process.env.CLIENT_URL);
 
 // Apply CORS middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Allow only the client URL
+  origin: process.env.CORS_ALLOWED_ORIGINS, // Allow only the client URL
   credentials: true, // Required for credentials (cookies)
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow necessary HTTP methods
