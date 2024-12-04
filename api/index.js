@@ -19,12 +19,21 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
+const allowedOrigins = [process.env.CLIENT_URL, 'https://mern-stack-template.vercel.app'];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Update this to your client's URL
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
