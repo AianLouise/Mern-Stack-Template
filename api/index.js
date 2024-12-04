@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
 app.get("/", (req, res) => {
-  res.json("Hello");
+  res.json("Welcome to the MERN Stack Template API");
 });
 
 // Connect to MongoDB
