@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFail } from '../redux/user/userSlice';
-import axiosInstance from '../../axiosInstance';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const response = await axiosInstance.post('/api/auth/login', { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, { email, password }, { withCredentials: true });
       dispatch(loginSuccess(response.data));
       console.log('Login successful:', response.data);
       // Redirect to landing page after successful login
