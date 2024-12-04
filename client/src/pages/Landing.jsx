@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const Landing = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await axios.get('/api/auth/logout');
+      const response = await fetch('/api/auth/logout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);

@@ -1,42 +1,72 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginStart, loginSuccess, loginFail } from '../redux/user/userSlice';
+import { registerStart, registerSuccess, registerFail } from '../redux/user/userSlice';
 
-const Login = () => {
+const Register = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    dispatch(loginStart());
+    dispatch(registerStart());
     try {
-      const response = await axios.post('/api/auth/login', { email, password }, {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        withCredentials: true, // Include credentials in the request
+        credentials: 'include', // Include credentials in the request
+        body: JSON.stringify({ username, email, password }),
       });
-      dispatch(loginSuccess(response.data));
-      console.log('Login successful:', response.data);
-      // Redirect to landing page after successful login
-      navigate('/landing');
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const data = await response.json();
+      dispatch(registerSuccess(data));
+      setSuccess('User registered successfully');
+      setError('');
+      // Redirect to login page after successful registration
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Redirect after 2 seconds
     } catch (err) {
-      dispatch(loginFail('Invalid email or password'));
+      dispatch(registerFail('Registration failed'));
+      setError('Registration failed');
+      setSuccess('');
     }
   };
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center">Login</h2>
+        <h2 className="text-2xl font-bold text-center">Register</h2>
         {error && <p className="text-red-500">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-4">
+        {success && <p className="text-green-500">{success}</p>}
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter your username"
+              className="w-full px-3 py-2 mt-1 border rounded"
+            />
+          </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
@@ -79,11 +109,11 @@ const Login = () => {
             className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
         <p className="text-center">
-          Don't have an account? <Link to="/register" className="text-blue-500">Register</Link>
+          Already have an account? <Link to="/login" className="text-blue-500">Login</Link>
         </p>
         <p className="text-center">
           <Link to="/" className="text-blue-500">Go to Home</Link>
@@ -93,4 +123,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

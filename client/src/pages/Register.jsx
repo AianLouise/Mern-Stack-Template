@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerStart, registerSuccess, registerFail } from '../redux/user/userSlice';
@@ -19,13 +18,21 @@ const Register = () => {
     e.preventDefault();
     dispatch(registerStart());
     try {
-      const response = await axios.post('/api/auth/register', { username, email, password }, {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        withCredentials: true, // Include credentials in the request
+        credentials: 'include', // Include credentials in the request
+        body: JSON.stringify({ username, email, password }),
       });
-      dispatch(registerSuccess(response.data));
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const data = await response.json();
+      dispatch(registerSuccess(data));
       setSuccess('User registered successfully');
       setError('');
       // Redirect to login page after successful registration

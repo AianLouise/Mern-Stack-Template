@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -15,11 +14,18 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get('/api/user/profile');
-        setUser(response.data);
-        setUsername(response.data.username);
-        setEmail(response.data.email);
-        setProfilePicture(response.data.profilePicture);
+        const response = await fetch('/api/user/profile', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch user profile');
+        }
+        const data = await response.json();
+        setUser(data);
+        setUsername(data.username);
+        setEmail(data.email);
+        setProfilePicture(data.profilePicture);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch user profile');
@@ -32,7 +38,13 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get('/api/auth/logout');
+      const response = await fetch('/api/auth/logout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);
@@ -45,12 +57,19 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post(`/api/user/update/${user._id}`, {
-        username,
-        email,
-        profilePicture,
+      const response = await fetch(`/api/user/update/${user._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ username, email, profilePicture }),
       });
-      setUser(response.data);
+      if (!response.ok) {
+        throw new Error('Failed to update user profile');
+      }
+      const data = await response.json();
+      setUser(data);
       setEditMode(false);
     } catch (err) {
       setError('Failed to update user profile');
