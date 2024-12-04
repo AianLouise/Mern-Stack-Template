@@ -20,6 +20,8 @@ console.log('Client URL:', process.env.CLIENT_URL);
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 app.use(cookieParser());
