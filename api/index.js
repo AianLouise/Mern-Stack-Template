@@ -17,8 +17,6 @@ const app = express();
 console.log('Client URL:', process.env.CLIENT_URL);
 
 // CORS configuration
-const cors = require('cors');
-
 const corsOptions = {
   origin: process.env.CLIENT_URL, // Read from .env file
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these methods
