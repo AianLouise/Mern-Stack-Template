@@ -13,21 +13,25 @@ dotenv.config();
 const __dirname = path.resolve();
 const app = express();
 
+// Log the client URL value
+console.log('Client URL:', process.env.CLIENT_URL);
+
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CLIENT_URL, // Read from .env file
+  credentials: true, // Allow credentials like cookies
+};
+
+// Apply middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
-
-// Middleware
-const corsOptions = {
-  origin: 'https://mern-stack-template.vercel.app',
-  credentials: true,
-};
-app.use(cors(corsOptions));
-
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '/client/dist')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
