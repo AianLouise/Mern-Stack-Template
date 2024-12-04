@@ -17,14 +17,29 @@ const Login = () => {
     dispatch(loginStart());
     try {
       console.log('Attempting to login with:', { email, password });
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, { email, password }, { withCredentials: true });
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        { email, password },
+        {
+          headers: {
+            'Content-Type': 'application/json', // Ensures correct content type
+          },
+          withCredentials: true, // Allows cookies or credentials to be sent
+        }
+      );
+
       dispatch(loginSuccess(response.data));
       console.log('Login successful:', response.data);
       // Redirect to landing page after successful login
       navigate('/landing');
     } catch (err) {
       console.error('Login failed:', err);
-      dispatch(loginFail('Invalid email or password'));
+
+      // Display a more descriptive error message
+      const errorMessage =
+        err.response?.data?.message || 'Invalid email or password';
+      dispatch(loginFail(errorMessage));
     }
   };
 

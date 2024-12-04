@@ -16,18 +16,22 @@ const app = express();
 // Log the client URL value
 console.log('Client URL:', process.env.CLIENT_URL);
 
-// CORS configuration
+// Configure CORS options
 const corsOptions = {
-  origin: process.env.CLIENT_URL, // Read from .env file
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these methods
-  credentials: true, // Allow credentials like cookies
+  origin: 'https://mern-stack-template.vercel.app', // Allow specific origin from .env file
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed methods
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
-// Apply middleware
+// Apply CORS middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get("/", (req, res) => {
+  res.json("Hello");
+});
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
