@@ -11,13 +11,20 @@ export const test = (req, res) => {
 // Get user profile
 export const getUserProfile = async (req, res, next) => {
   try {
+    // Find the user by ID and exclude the password field
     const user = await User.findById(req.user.id).select('-password');
+
+    // If user is not found, return a 404 error
     if (!user) {
+      console.log('User not found:', req.user.id);
       return next(errorHandler(404, 'User not found'));
     }
+
+    // Return the user profile data
     res.status(200).json(user);
   } catch (error) {
-    next(error);
+    console.error('Error fetching user profile:', error);
+    next(errorHandler(500, 'Internal Server Error'));
   }
 };
 
