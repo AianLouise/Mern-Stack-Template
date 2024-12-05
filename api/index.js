@@ -8,6 +8,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
 
+// Load environment variables from .env file
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -25,13 +26,18 @@ const corsConfig = {
 
 app.options('*', cors(corsConfig));
 app.use(cors(corsConfig));
+
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cookieParser());
+
+// Serve static files from the client/dist directory
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
+// Root route
 app.get("/", (req, res) => {
-  res.json("Hello");
+  res.send("Welcome to the MERN application!");
 });
 
 // Connect to MongoDB
@@ -43,7 +49,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
-// Catch-all route to serve index.html
+// Catch-all route to serve index.html for any other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
