@@ -16,9 +16,11 @@ const Profile = () => {
   const storage = getStorage(app);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+       const fetchUserProfile = async () => {
       try {
-        const response = await axiosInstance.get('/api/user/profile');
+        const response = await axiosInstance.get('/api/user/profile', {
+          withCredentials: true,
+        });
         setUser(response.data);
         setUsername(response.data.username);
         setEmail(response.data.email);
