@@ -4,7 +4,7 @@ import axios from 'axios';
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const axiosInstance = axios.create({
-  baseURL: apiBaseUrl, // Base URL for API requests
+  baseURL: 'https://mern-stack-template-api.vercel.app', // Base URL for API requests
   withCredentials: true, // Include credentials (cookies) in the request
   headers: {
     'Content-Type': 'application/json', // Ensure JSON content type
