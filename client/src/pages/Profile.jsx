@@ -53,7 +53,11 @@ const Profile = () => {
         email,
         profilePicture,
       });
-      setUser(response.data);
+      if (!response.ok) {
+        throw new Error('Failed to update user profile');
+      }
+      const data = await response.json();
+      setUser(data);
       setEditMode(false);
     } catch (err) {
       setError('Failed to update user profile');
