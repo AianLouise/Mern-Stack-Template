@@ -16,11 +16,9 @@ const Profile = () => {
   const storage = getStorage(app);
 
   useEffect(() => {
-       const fetchUserProfile = async () => {
+    const fetchUserProfile = async () => {
       try {
-        const response = await axiosInstance.get('/api/user/profile', {
-          withCredentials: true,
-        });
+        const response = await axiosInstance.get('/api/user/profile');
         setUser(response.data);
         setUsername(response.data.username);
         setEmail(response.data.email);
@@ -55,11 +53,7 @@ const Profile = () => {
         email,
         profilePicture,
       });
-      if (!response.ok) {
-        throw new Error('Failed to update user profile');
-      }
-      const data = await response.json();
-      setUser(data);
+      setUser(response.data);
       setEditMode(false);
     } catch (err) {
       setError('Failed to update user profile');
