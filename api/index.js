@@ -17,11 +17,16 @@ const app = express();
 console.log('Client URL:', process.env.CLIENT_URL);
 
 // Apply CORS middleware
-app.use(cors({
+const corsConfig = {
   origin: process.env.CLIENT_URL,
   credentials: true,
-}));
-app.use(express.json());
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
+
+app.options('*', cors(corsConfig));
+app.use(cors(corsConfig));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
