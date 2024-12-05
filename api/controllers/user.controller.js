@@ -11,15 +11,12 @@ export const test = (req, res) => {
 // Get user profile
 export const getUserProfile = async (req, res, next) => {
   try {
-    // Assuming user ID is passed as a query parameter or in the request body
-    const userId = req.query.id || req.body.id;
-
     // Find the user by ID and exclude the password field
-    const user = await User.findById(userId).select('-password');
+    const user = await User.findById(req.user.id).select('-password');
 
     // If user is not found, return a 404 error
     if (!user) {
-      console.log('User not found:', userId);
+      console.log('User not found:', req.user.id);
       return next(errorHandler(404, 'User not found'));
     }
 
