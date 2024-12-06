@@ -26,10 +26,22 @@ export const login = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: hashedPassword, ...rest } = validUser._doc;
     const expiryDate = new Date(Date.now() + 3600000); // 1 hour
-    res
-      .cookie('access_token', token, { httpOnly: true, expires: expiryDate })
-      .status(200)
-      .json(rest);
+
+    // Log the token and user information for debugging
+    console.log('Login successful:', { token, user: rest });
+
+    // Set the cookie with the token
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'None', // Required for cross-origin cookies
+      expires: expiryDate,
+    });
+
+    // Log the cookies to verify if the token is set
+    console.log('Cookies set:', res.get('Set-Cookie'));
+
+    res.status(200).json({ ...rest, token }); // Return the token for debugging purposes
   } catch (error) {
     next(error);
   }
