@@ -35,7 +35,7 @@
      `npm run dev`
 
 4. **Access the Website:**
-   - Open your browser and go to `http://localhost:3000`. Your MERN stack website should now be running locally.
+   - Open your browser and go to `http://localhost:5173`. Your MERN stack website should now be running locally.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -80,11 +80,16 @@ Follow these steps to deploy your MERN stack application to Vercel:
        VITE_API_BASE_URL='https://your-backend-url.vercel.app'
        ```
 
-6. **Verify the Deployment**:
+6. **Create Deployment to Save Changes**:
+   - Go to the "Deployments" tab of your project in Vercel.
+   - Click on "Create Deployment" to deploy your project with the new environment variables.
+   - Wait for the deployment process to complete. This may take a few minutes.
+
+7. **Verify the Deployment**:
    - Once the deployment of both the API and client is complete, Vercel will provide URLs for both the frontend and backend.
    - Open the provided URLs in your browser to verify that your application is running correctly.
 
-7. **Update CORS Configuration**:
+8. **Update CORS Configuration**:
    - Ensure that your backend CORS configuration allows requests from your frontend URL. Add the following code to your `index.js` file if it hasn't been added yet:
      ```javascript
      const corsConfig = {
