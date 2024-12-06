@@ -6,6 +6,16 @@
 2. **Set Up the Server (Backend):**
    - Open a terminal or command prompt and navigate to the `api` folder:
      `cd api`
+   - Create the `.env` file and add the following content:
+     ```
+     JWT_SECRET='your_jwt_secret'
+     _URIMONGODB=
+     CLIENT_URL=http://localhost:5173
+     PORT=3000
+     EMAIL_USERNAME=your_email_username
+     EMAIL_PASSWORD=your_email_password
+     NODE_ENV=development # Set to 'production' for production environment
+     ```
    - Install the server dependencies:
      `npm install`
    - Start the server:
@@ -15,6 +25,10 @@
    - Open another terminal or command prompt.
    - Navigate to the `client` folder:
      `cd client`
+   - Create the `.env` file and add the following content:
+     ```
+     VITE_API_BASE_URL=http://localhost:3000
+     ```
    - Install the client dependencies:
      `npm install`
    - Start the client-side development server:
@@ -22,42 +36,6 @@
 
 4. **Access the Website:**
    - Open your browser and go to `http://localhost:3000`. Your MERN stack website should now be running locally.
-
---------------------------------------------------------------------------------------------------------------------
-
-### How to Add `.env` Files
-
-1. **Backend (`api/.env`)**:  
-   - Go to the `api` folder.
-   - Create a file named `.env` if it doesn't already exist.  
-   - Add the following content:  
-     ```
-     JWT_SECRET='your_jwt_secret'
-     MONGODB_URI=
-     CLIENT_URL=http://localhost:5173
-     PORT=3000
-     EMAIL_USERNAME=your_email_username
-     EMAIL_PASSWORD=your_email_password
-     NODE_ENV=development # Set to 'production' for production environment
-     ```
-
-2. **Frontend (`client/.env`)**:  
-   - Go to the `client` folder.  
-   - Create a file named `.env` if it doesn't already exist.  
-   - Add the following content:  
-     ```
-     VITE_API_BASE_URL=http://localhost:3000
-     ```
-
-3. **Secure the `.env` Files**:  
-   - In both the `api` and `client` folders, add `.env` to the `.gitignore` file to prevent committing sensitive data:  
-     ```
-     .env
-     ```
-
----
-
-This is how you add `.env` files to your project!
 
 --------------------------------------------------------------------------------------------------------------------
 

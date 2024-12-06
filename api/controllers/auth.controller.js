@@ -30,13 +30,22 @@ export const login = async (req, res, next) => {
     // Log the token and user information for debugging
     console.log('Login successful:', { token, user: rest });
 
-    // Set the cookie with the token
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true in production
-      sameSite: 'None', // Required for cross-origin cookies
-      expires: expiryDate,
-    });
+    // Set the cookie with the token based on the environment
+    if (process.env.NODE_ENV === 'production') {
+      res.cookie('access_token', token, {
+        httpOnly: true,
+        secure: true, // Set to true in production
+        sameSite: 'None', // Required for cross-origin cookies
+        expires: expiryDate,
+      });
+    } else {
+      res.cookie('access_token', token, {
+        httpOnly: true,
+        secure: false, // Set to false in development
+        sameSite: 'Lax', // Lax is sufficient for development
+        expires: expiryDate,
+      });
+    }
 
     // Log the cookies to verify if the token is set
     console.log('Cookies set:', res.get('Set-Cookie'));
