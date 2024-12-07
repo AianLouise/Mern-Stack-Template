@@ -64,15 +64,29 @@ const Profile = () => {
 
   const handleProfilePictureChange = async (e) => {
     const file = e.target.files[0];
-    const storageRef = ref(storage, `mern-test/profilePictures/${user._id}`);
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
     try {
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      setProfilePicture(downloadURL);
+      const response = await axiosInstance.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data.success) {
+        setProfilePicture(response.data.url); // Cloudinary file URL
+      } else {
+        setError('Failed to upload profile picture');
+      }
     } catch (err) {
+      console.error(err);
       setError('Failed to upload profile picture');
     }
   };
+  
 
   if (loading) {
     return <div>Loading...</div>;

@@ -5,8 +5,10 @@ import path from 'path';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
+// Import routes
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
+import uploadRoutes from './routes/upload.route.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -21,33 +23,35 @@ console.log('Client URL:', process.env.CLIENT_URL);
 const corsConfig = {
   origin: process.env.CLIENT_URL,
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 
 app.options('*', cors(corsConfig));
 app.use(cors(corsConfig));
 
 // Middleware to parse JSON and URL-encoded data
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb' }));
 app.use(cookieParser());
 
 // Serve static files from the client/dist directory
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
 // Root route
-app.get("/", (req, res) => {
-  res.send("Welcome to the MERN application!");
+app.get('/', (req, res) => {
+  res.send('Welcome to the MERN application!');
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api', uploadRoutes);
 
 // Catch-all route to serve index.html for any other routes
 app.get('*', (req, res) => {
