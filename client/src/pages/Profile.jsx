@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { app } from '../firebase'; // Make sure to import your Firebase configuration
 import axiosInstance from '../../axiosInstance';
 
 const Profile = () => {
@@ -12,11 +10,11 @@ const Profile = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
   const navigate = useNavigate();
-  const storage = getStorage(app);
 
   useEffect(() => {
-      const fetchUserProfile = async () => {
+    const fetchUserProfile = async () => {
       try {
         const response = await axiosInstance.get('/api/user/profile', {
           withCredentials: true,
@@ -48,12 +46,39 @@ const Profile = () => {
     navigate(-1); // Navigate back to the previous page
   };
 
+  const uploadProfilePicture = async () => {
+    if (!profilePictureFile) return null;
+
+    const formData = new FormData();
+    formData.append('file', profilePictureFile);
+
+    try {
+      const response = await axiosInstance.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        return response.data.url; // Cloudinary file URL
+      } else {
+        setError('Failed to upload profile picture');
+        return null;
+      }
+    } catch (err) {
+      console.error('Error uploading profile picture:', err);
+      setError('Failed to upload profile picture');
+      return null;
+    }
+  };
+
   const handleSave = async () => {
     try {
+      const profilePictureUrl = await uploadProfilePicture();
       const response = await axiosInstance.post(`/api/user/update/${user._id}`, {
         username,
         email,
-        profilePicture,
+        profilePicture: profilePictureUrl || profilePicture,
       });
       setUser(response.data);
       setEditMode(false);
@@ -62,31 +87,12 @@ const Profile = () => {
     }
   };
 
-  const handleProfilePictureChange = async (e) => {
+  const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
-    const formData = new FormData();
-    formData.append('file', file);
-  
-    try {
-      const response = await axiosInstance.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      if (response.data.success) {
-        setProfilePicture(response.data.url); // Cloudinary file URL
-      } else {
-        setError('Failed to upload profile picture');
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Failed to upload profile picture');
-    }
+    setProfilePictureFile(file);
+    setProfilePicture(URL.createObjectURL(file));
   };
-  
 
   if (loading) {
     return <div>Loading...</div>;
