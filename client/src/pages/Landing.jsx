@@ -1,18 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../../axiosInstance';
+import handleLogout from '../utils/logout'; // Adjust the path as needed
 
 const Landing = () => {
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await axiosInstance.get('/api/auth/logout');
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
-  };
 
   return (
     <div className='w-full h-screen flex flex-col'>
@@ -20,7 +11,7 @@ const Landing = () => {
         <div className='text-white text-2xl font-bold'>MERN Template</div>
         <div>
           <Link to="/profile" className='text-white mr-4'>Profile</Link>
-          <button onClick={handleLogout} className='text-white'>Logout</button>
+          <button onClick={() => handleLogout(navigate)} className='text-white'>Logout</button>
         </div>
       </nav>
       <div className='flex-grow flex items-center justify-center'>

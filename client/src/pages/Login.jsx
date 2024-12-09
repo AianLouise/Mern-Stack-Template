@@ -12,12 +12,11 @@ const Login = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.user);
 
-   const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      console.log('Attempting to login with:', { email, password });
-  
+      console.log('Attempting to log in...');
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -26,19 +25,22 @@ const Login = () => {
         credentials: 'include', // Include credentials in the request
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Login failed:', errorData);
         throw new Error(errorData.message || 'Invalid email or password');
       }
-  
+
       const data = await response.json();
-      dispatch(loginSuccess(data));
       console.log('Login successful:', data);
-      // Redirect to landing page after successful login
-      navigate('/landing');
+      dispatch(loginSuccess(data));
+      localStorage.setItem('token', data.token); // Store the token in localStorage
+      console.log('Token stored in localStorage');
+      navigate('/landing'); // Redirect to landing page after successful login
+      console.log('Navigated to landing page');
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error('Login error:', err);
       dispatch(loginFail(err.message));
     }
   };

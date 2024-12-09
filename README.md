@@ -20,6 +20,10 @@
 
 4. [How to Get Cloudinary Environment Variables](#how-to-get-cloudinary-environment-variables)
 
+5. [Auth Components Documentation](#auth-components-documentation)
+   - [AuthRoute Component](#authroute-component)
+   - [AuthRedirect Component](#authredirect-component)
+
 --------------------------------------------------------------------------------------------------------------------
 
 ### Steps to Run a MERN Stack Website Locally:
@@ -200,3 +204,94 @@ Follow these steps to get them:
 
 By following these steps, you will have the necessary Cloudinary environment variables to configure your application for image uploads.
 
+--------------------------------------------------------------------------------------------------------------------
+
+## Auth Components Documentation
+
+### AuthRoute Component
+
+The `AuthRoute` component is used to protect routes that require authentication. It checks if the user is authenticated by verifying the presence of a token in `localStorage`. If the user is authenticated, it renders the child components. If not, it redirects the user to the login page.
+
+#### Implementation
+
+```jsx
+import { Navigate } from "react-router-dom";
+
+const AuthRoute = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem("token"); // Replace with your actual authentication logic
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+export default AuthRoute;
+```
+
+#### Usage
+
+In the `App.jsx` file, the `AuthRoute` component is used to protect the `/landing` and `/profile` routes:
+
+```jsx
+import AuthRoute from "./components/AuthRoute"; // Adjust the path as needed
+
+<Route
+  path="/landing"
+  element={
+    <AuthRoute>
+      <Landing />
+    </AuthRoute>
+  }
+/>
+<Route
+  path="/profile"
+  element={
+    <AuthRoute>
+      <Profile />
+    </AuthRoute>
+  }
+/>
+```
+
+### AuthRedirect Component
+
+The `AuthRedirect` component is used to redirect authenticated users away from routes that should only be accessible to unauthenticated users, such as the login and register pages. It checks if the user is authenticated by verifying the presence of a token in `localStorage`. If the user is authenticated, it redirects them to the landing page. If not, it renders the child components.
+
+#### Implementation
+
+```jsx
+import { Navigate } from "react-router-dom";
+
+const AuthRedirect = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem("token"); // Replace with your actual authentication logic
+
+  return isAuthenticated ? <Navigate to="/landing" /> : children;
+};
+
+export default AuthRedirect;
+```
+
+#### Usage
+
+In the `App.jsx` file, the `AuthRedirect` component is used to protect the `/login` and `/register` routes:
+
+```jsx
+import AuthRedirect from "./components/AuthRedirect"; // Adjust the path as needed
+
+<Route
+  path="/login"
+  element={
+    <AuthRedirect>
+      <Login />
+    </AuthRedirect>
+  }
+/>
+<Route
+  path="/register"
+  element={
+    <AuthRedirect>
+      <Register />
+    </AuthRedirect>
+  }
+/>
+```
+
+By using these components, you can ensure that only authenticated users can access certain routes and that authenticated users are redirected away from routes meant for unauthenticated users.

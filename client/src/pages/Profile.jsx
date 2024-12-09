@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosInstance';
+import handleLogout from '../utils/logout';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -32,15 +33,6 @@ const Profile = () => {
 
     fetchUserProfile();
   }, []);
-
-  const handleLogout = async () => {
-    try {
-      await axiosInstance.get('/api/auth/logout');
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
-  };
 
   const handleBack = () => {
     navigate(-1); // Navigate back to the previous page
@@ -114,7 +106,7 @@ const Profile = () => {
             Back
           </button>
           <button
-            onClick={handleLogout}
+            onClick={() => handleLogout(navigate)}
             className="text-white"
           >
             Logout
